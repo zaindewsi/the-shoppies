@@ -71,28 +71,6 @@ const Search = () => {
           placeholder="Search for a movie..."
         />
       </Form>
-      <div>
-        {nominations !== null && nominations.length > 4 ? (
-          <div>
-            <DoneBanner>
-              <div>
-                <h1>You've reached the nomination limit</h1>
-              </div>
-            </DoneBanner>
-          </div>
-        ) : (
-          <div>
-            <Banner>
-              <div>
-                <h1>
-                  You have {5 - nominations.length} nomination
-                  {nominations.length === 4 ? null : "s"} remaining
-                </h1>
-              </div>
-            </Banner>
-          </div>
-        )}
-      </div>
       <MainBody>
         <Results>
           <div>
@@ -128,26 +106,45 @@ const Search = () => {
           </div>
         </Results>
         <Nominations>
-          {nominations.length === 0 ? (
-            <EmptyNoms>Your nominations will show up here</EmptyNoms>
-          ) : (
-            nominations.map((item, index) => {
-              return (
-                <div>
-                  <h1>
-                    {item.Title} ({item.Year})
-                  </h1>
-                  <img
-                    src={item.Poster === "N/A" ? "/noImage.png" : item.Poster}
-                    alt={item.Title}
-                  />
-                  <button onClick={() => removeFromNomination(index)}>
-                    Remove
-                  </button>
-                </div>
-              );
-            })
-          )}
+          <div>
+            {nominations !== null && nominations.length > 4 ? (
+              <div>
+                <DoneBanner>
+                  <div>
+                    <h1>You've reached the nomination limit</h1>
+                  </div>
+                </DoneBanner>
+              </div>
+            ) : (
+              <div>
+                <Banner>
+                  <div>
+                    <h1>
+                      You have {5 - nominations.length} nomination
+                      {nominations.length === 4 ? null : "s"} remaining
+                    </h1>
+                  </div>
+                </Banner>
+              </div>
+            )}
+          </div>
+
+          {nominations.map((item, index) => {
+            return (
+              <div>
+                <h1>
+                  {item.Title} ({item.Year})
+                </h1>
+                <img
+                  src={item.Poster === "N/A" ? "/noImage.png" : item.Poster}
+                  alt={item.Title}
+                />
+                <button onClick={() => removeFromNomination(index)}>
+                  Remove
+                </button>
+              </div>
+            );
+          })}
         </Nominations>
       </MainBody>
     </div>
@@ -161,8 +158,6 @@ const EmptyResult = styled.div`
   display: flex;
   justify-content: center;
 `;
-
-const EmptyNoms = styled(EmptyResult)``;
 
 const MainBody = styled.div`
   min-height: 50vh;
@@ -212,7 +207,7 @@ const Form = styled.form`
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background-color: #37474f;
+  background-color: #f9f9f9;
   width: 75rem;
   cursor: "auto";
   padding: 2rem;
@@ -228,7 +223,7 @@ const Input = styled.input`
   background-color: transparent;
   width: 100%;
   border: none;
-  color: white;
+  color: #004c3f;
   transition: margin 300ms cubic-bezier(0.645, 0.045, 0.355, 1);
 
   &:focus,
@@ -236,7 +231,7 @@ const Input = styled.input`
     outline: none;
   }
   &::placeholder {
-    color: white;
+    color: #004c3f;
   }
 `;
 

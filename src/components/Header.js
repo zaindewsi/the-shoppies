@@ -25,14 +25,7 @@ const Top = styled.div`
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-
-  h1 {
-    color: #004c3f;
-  }
-
-  p {
-    color: #222;
-  }
+  color: #004c3f;
 `;
 
 export default Header;
