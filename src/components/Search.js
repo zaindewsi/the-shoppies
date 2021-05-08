@@ -11,7 +11,7 @@ const Search = () => {
 
   const sendQuery = async (query) => {
     let data = await axios.get(
-      `http://www.omdbapi.com/?i=tt3896198&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
+      `http://www.omdbapi.com/?i=tt3896198&type=movie&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
     );
     setResultData(data.data.Search);
   };
@@ -71,22 +71,28 @@ const Search = () => {
           placeholder="Search for a movie..."
         />
       </Form>
-      <Banner>
-        <div className={nominations.length >= 5 ? "done" : null}>
-          {nominations !== null && nominations.length > 4 ? (
-            <div>
-              <h1>You've reached the nomination limit</h1>
-            </div>
-          ) : (
-            <div>
-              <h1>
-                You have {5 - nominations.length} nomination
-                {nominations.length === 4 ? null : "s"} remaining
-              </h1>
-            </div>
-          )}
-        </div>
-      </Banner>
+      <div>
+        {nominations !== null && nominations.length > 4 ? (
+          <div>
+            <DoneBanner>
+              <div>
+                <h1>You've reached the nomination limit</h1>
+              </div>
+            </DoneBanner>
+          </div>
+        ) : (
+          <div>
+            <Banner>
+              <div>
+                <h1>
+                  You have {5 - nominations.length} nomination
+                  {nominations.length === 4 ? null : "s"} remaining
+                </h1>
+              </div>
+            </Banner>
+          </div>
+        )}
+      </div>
       <MainBody>
         <Results>
           <div>
@@ -240,6 +246,10 @@ const Banner = styled.div`
   justify-content: center;
   background-color: #32af2d;
   padding: 20px;
+`;
+
+const DoneBanner = styled(Banner)`
+  background-color: red;
 `;
 
 export default Search;
