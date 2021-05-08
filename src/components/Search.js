@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import _ from "lodash";
@@ -11,7 +11,7 @@ const Search = () => {
 
   const sendQuery = async (query) => {
     let data = await axios.get(
-      `http://www.omdbapi.com/?i=tt3896198&apikey=434167e&s=${query}`
+      `http://www.omdbapi.com/?i=tt3896198&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
     );
     setResultData(data.data.Search);
   };
@@ -30,7 +30,6 @@ const Search = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
-
   const addtoNominations = (item) => {
     let newNominations = [...nominations, item];
     setNominations([...nominations, item]);
@@ -39,11 +38,29 @@ const Search = () => {
     ls.set("nominations", newNominations);
   };
 
+  const removeFromNomination = (index) => {
+    let array = [...nominations];
+
+    if (index !== -1) {
+      array.splice(index, 1);
+      setNominations(array);
+    }
+
+    ls.remove("nominations");
+  };
+
   const isButtonDisabled = (item) => {
     return (
       nominations && (nominations.includes(item) || nominations.length >= 5)
     );
   };
+
+  useEffect(() => {
+    let myNominations = ls.get("nominations");
+    if (myNominations) {
+      setNominations(myNominations);
+    }
+  }, []);
 
   return (
     <div>
@@ -54,42 +71,73 @@ const Search = () => {
           placeholder="Search for a movie..."
         />
       </Form>
+      <Banner>
+        <div className={nominations.length >= 5 ? "done" : null}>
+          {nominations !== null && nominations.length > 4 ? (
+            <div>
+              <h1>You've reached the nomination limit</h1>
+            </div>
+          ) : (
+            <div>
+              <h1>
+                You have {5 - nominations.length} nomination
+                {nominations.length === 4 ? null : "s"} remaining
+              </h1>
+            </div>
+          )}
+        </div>
+      </Banner>
       <MainBody>
         <Results>
           <div>
-            {resultData ? (
+            {!resultData || !searchQuery ? (
+              <EmptyResult>Search for a movie to get started</EmptyResult>
+            ) : (
               resultData.map((item, index) => {
-                return !nominations.includes(item) ? (
-                  <>
-                    <h1>{item.Title}</h1>
-                    <h1>{item.Year}</h1>
-                    <img src={item.Poster} alt={item.Title} />
+                return nominations.includes(item) ? (
+                  <div></div>
+                ) : (
+                  <div>
+                    <h1>
+                      {item.Title} ({item.Year})
+                    </h1>
+                    <img
+                      src={item.Poster === "N/A" ? "/noImage.png" : item.Poster}
+                      alt={item.Title}
+                    />
                     <button
                       disabled={isButtonDisabled(item)}
-                      onClick={() => addtoNominations(item)}
+                      onClick={
+                        nominations.length < 5
+                          ? () => addtoNominations(item)
+                          : window.scrollTo({ top: 0, behavior: "smooth" })
+                      }
                     >
                       Add to nominations
                     </button>
-                  </>
-                ) : null;
+                  </div>
+                );
               })
-            ) : (
-              <div>Search for a movie...</div>
             )}
           </div>
         </Results>
         <Nominations>
-          {" "}
-          {!nominations ? (
-            <div>Add items to list...</div>
+          {nominations.length === 0 ? (
+            <EmptyNoms>Your nominations will show up here</EmptyNoms>
           ) : (
             nominations.map((item, index) => {
               return (
                 <div>
-                  <h1>{item.Title}</h1>
-                  <h1>{item.Year}</h1>
-                  <img src={item.Poster} alt={item.Title} />
-                  <button>Remove</button>
+                  <h1>
+                    {item.Title} ({item.Year})
+                  </h1>
+                  <img
+                    src={item.Poster === "N/A" ? "/noImage.png" : item.Poster}
+                    alt={item.Title}
+                  />
+                  <button onClick={() => removeFromNomination(index)}>
+                    Remove
+                  </button>
                 </div>
               );
             })
@@ -100,6 +148,16 @@ const Search = () => {
   );
 };
 
+const EmptyResult = styled.div`
+  min-height: 50vh;
+  color: black;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+`;
+
+const EmptyNoms = styled(EmptyResult)``;
+
 const MainBody = styled.div`
   min-height: 50vh;
   display: flex;
@@ -109,27 +167,38 @@ const Results = styled.div`
   width: 50%;
   justify-content: center;
   color: #000;
+  background-color: #fff;
+  margin: 50px;
+  box-shadow: rgb(0 0 0 / 69%) 0 0 30px -10px,
+    rgb(0 0 0 / 73%) 0 10px 10px -10px;
+  padding: 2rem;
 
   h1 {
+    font-size: 30px;
     display: flex;
     justify-content: center;
-    margin: auto;
+    margin: 2rem auto;
   }
   img {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: auto;
+    margin: 2rem auto;
+    max-width: 300px;
+    max-height: 450px;
+    min-height: 430px;
   }
   button {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: auto;
+    margin: 2rem auto;
   }
 `;
 
-const Nominations = styled(Results)``;
+const Nominations = styled(Results)`
+  margin-left: 0;
+`;
 
 const Form = styled.form`
   position: relative;
@@ -163,6 +232,14 @@ const Input = styled.input`
   &::placeholder {
     color: white;
   }
+`;
+
+const Banner = styled.div`
+  color: #000;
+  display: flex;
+  justify-content: center;
+  background-color: #32af2d;
+  padding: 20px;
 `;
 
 export default Search;
