@@ -1,19 +1,55 @@
 import React, { useState, useCallback, useEffect } from "react";
-import styled from "styled-components";
 import axios from "axios";
 import _ from "lodash";
 import ls from "local-storage";
+import { VStack, StackDivider } from "@chakra-ui/react";
+import { Trash } from "@styled-icons/boxicons-regular";
+import {
+  DoneBanner,
+  Banner,
+  Input,
+  Form,
+  SearchArea,
+  Nominations,
+  Details,
+  MovieCard,
+  Poster,
+  PosterImg,
+  Remove,
+  NomButton,
+  Results,
+  MainBody,
+  Noms,
+  EmptyResult,
+} from "./StyledComponents";
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [resultData, setResultData] = useState([]);
   const [nominations, setNominations] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const sendQuery = async (query) => {
+    setLoading(true);
     let data = await axios.get(
-      `http://www.omdbapi.com/?i=tt3896198&type=movie&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
+      `http://www.omdbapi.com/?&type=movie&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
     );
-    setResultData(data.data.Search);
+    let newData = data.data.Search;
+
+    if (data.data.Error) {
+      setResultData([]);
+    } else {
+      let allMovies = [];
+
+      for (let i of newData) {
+        let details = await axios(
+          `https://www.omdbapi.com/?i=${i.imdbID}&apikey=${process.env.REACT_APP_API_KEY_OMDB}`
+        );
+        allMovies.push(details.data);
+      }
+      setResultData(allMovies);
+    }
+    setLoading(false);
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,14 +75,14 @@ const Search = () => {
   };
 
   const removeFromNomination = (index) => {
-    let array = [...nominations];
+    let newNominations = [...nominations];
 
     if (index !== -1) {
-      array.splice(index, 1);
-      setNominations(array);
+      newNominations.splice(index, 1);
+      setNominations(newNominations);
     }
 
-    ls.remove("nominations");
+    ls.set("nominations", newNominations);
   };
 
   const isButtonDisabled = (item) => {
@@ -64,32 +100,74 @@ const Search = () => {
 
   return (
     <div>
-      <Form onSubmit={handleSubmit}>
-        <Input
-          onChange={handleSearchQuery}
-          value={searchQuery}
-          placeholder="Search for a movie..."
-        />
-      </Form>
+      <SearchArea>
+        <Form onSubmit={handleSubmit}>
+          <Input
+            onChange={handleSearchQuery}
+            value={searchQuery}
+            placeholder="Search for a movie..."
+          />
+        </Form>
+      </SearchArea>
+      <div>
+        {nominations !== null && nominations.length > 4 ? (
+          <div>
+            <DoneBanner>
+              <div>
+                <h1>You've reached the nomination limit</h1>
+              </div>
+            </DoneBanner>
+          </div>
+        ) : (
+          <div>
+            <Banner>
+              <div>
+                <h1>
+                  You have {5 - nominations.length} nomination
+                  {nominations.length === 4 ? null : "s"} remaining
+                </h1>
+              </div>
+            </Banner>
+          </div>
+        )}
+      </div>
       <MainBody>
         <Results>
-          <div>
-            {!resultData || !searchQuery ? (
-              <EmptyResult>Search for a movie to get started</EmptyResult>
+          <EmptyResult>
+            {!searchQuery ? (
+              <h1>Search for a movie to get started!</h1>
             ) : (
-              resultData.map((item, index) => {
-                return nominations.includes(item) ? (
-                  <div></div>
+              <h1>Search results for {searchQuery}...</h1>
+            )}
+          </EmptyResult>
+          {!resultData || resultData.length < 1 ? (
+            <div>
+              <EmptyResult>
+                {loading ? (
+                  <img src={"/giphy.gif"} alt={"loading..."} />
                 ) : (
-                  <div>
-                    <h1>
-                      {item.Title} ({item.Year})
-                    </h1>
-                    <img
+                  "No results found"
+                )}
+              </EmptyResult>
+            </div>
+          ) : (
+            resultData.map((item, index) => {
+              return (
+                <MovieCard>
+                  <Poster>
+                    <PosterImg
                       src={item.Poster === "N/A" ? "/noImage.png" : item.Poster}
                       alt={item.Title}
                     />
-                    <button
+                  </Poster>
+                  <Details>
+                    <h1>
+                      {item.Title} ({item.Year})
+                    </h1>
+                    <p>{item.Runtime}</p>
+                    <p>{item.Plot}</p>
+
+                    <NomButton
                       disabled={isButtonDisabled(item)}
                       onClick={
                         nominations.length < 5
@@ -97,154 +175,42 @@ const Search = () => {
                           : window.scrollTo({ top: 0, behavior: "smooth" })
                       }
                     >
-                      Add to nominations
-                    </button>
-                  </div>
-                );
-              })
-            )}
-          </div>
+                      Nominate
+                    </NomButton>
+                  </Details>
+                </MovieCard>
+              );
+            })
+          )}
         </Results>
         <Nominations>
-          <div>
-            {nominations !== null && nominations.length > 4 ? (
-              <div>
-                <DoneBanner>
+          <EmptyResult>
+            <h1>Your Nominations</h1>
+          </EmptyResult>
+          <VStack
+            divider={<StackDivider borderColor="gray.400" />}
+            align="stretch"
+            backgroundColor={"#eee"}
+          >
+            {nominations.map((item, index) => {
+              return (
+                <Noms>
                   <div>
-                    <h1>You've reached the nomination limit</h1>
+                    <h1>{item.Title}</h1>
+                    <p> ({item.Year})</p>
                   </div>
-                </DoneBanner>
-              </div>
-            ) : (
-              <div>
-                <Banner>
-                  <div>
-                    <h1>
-                      You have {5 - nominations.length} nomination
-                      {nominations.length === 4 ? null : "s"} remaining
-                    </h1>
-                  </div>
-                </Banner>
-              </div>
-            )}
-          </div>
 
-          {nominations.map((item, index) => {
-            return (
-              <div>
-                <h1>
-                  {item.Title} ({item.Year})
-                </h1>
-                <img
-                  src={item.Poster === "N/A" ? "/noImage.png" : item.Poster}
-                  alt={item.Title}
-                />
-                <button onClick={() => removeFromNomination(index)}>
-                  Remove
-                </button>
-              </div>
-            );
-          })}
+                  <Remove onClick={() => removeFromNomination(index)}>
+                    <Trash size="24px" />
+                  </Remove>
+                </Noms>
+              );
+            })}
+          </VStack>
         </Nominations>
       </MainBody>
     </div>
   );
 };
-
-const EmptyResult = styled.div`
-  min-height: 50vh;
-  color: black;
-  font-size: 30px;
-  display: flex;
-  justify-content: center;
-`;
-
-const MainBody = styled.div`
-  min-height: 50vh;
-  display: flex;
-`;
-
-const Results = styled.div`
-  width: 50%;
-  justify-content: center;
-  color: #000;
-  background-color: #fff;
-  margin: 50px;
-  box-shadow: rgb(0 0 0 / 69%) 0 0 30px -10px,
-    rgb(0 0 0 / 73%) 0 10px 10px -10px;
-  padding: 2rem;
-
-  h1 {
-    font-size: 30px;
-    display: flex;
-    justify-content: center;
-    margin: 2rem auto;
-  }
-  img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2rem auto;
-    max-width: 300px;
-    max-height: 450px;
-    min-height: 430px;
-  }
-  button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2rem auto;
-  }
-`;
-
-const Nominations = styled(Results)`
-  margin-left: 0;
-`;
-
-const Form = styled.form`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background-color: #f9f9f9;
-  width: 75rem;
-  cursor: "auto";
-  padding: 2rem;
-  height: 2rem;
-  border-radius: 10rem;
-  transition: width 300ms cubic-bezier(0.645, 0.045, 0.355, 1);
-  margin: 2rem auto;
-`;
-
-const Input = styled.input`
-  font-size: 14px;
-  line-height: 1;
-  background-color: transparent;
-  width: 100%;
-  border: none;
-  color: #004c3f;
-  transition: margin 300ms cubic-bezier(0.645, 0.045, 0.355, 1);
-
-  &:focus,
-  &:active {
-    outline: none;
-  }
-  &::placeholder {
-    color: #004c3f;
-  }
-`;
-
-const Banner = styled.div`
-  color: #000;
-  display: flex;
-  justify-content: center;
-  background-color: #32af2d;
-  padding: 20px;
-`;
-
-const DoneBanner = styled(Banner)`
-  background-color: red;
-`;
 
 export default Search;
