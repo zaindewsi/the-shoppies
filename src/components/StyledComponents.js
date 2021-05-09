@@ -232,6 +232,14 @@ const Form = styled.form`
   border-radius: 10rem;
   transition: width 300ms cubic-bezier(0.645, 0.045, 0.355, 1);
   margin: auto;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media (max-width: 1430px) {
+    width: 100%;
+  }
 `;
 
 const Input = styled.input`
@@ -249,6 +257,13 @@ const Input = styled.input`
   }
   &::placeholder {
     color: #004c3f;
+  }
+
+  @media (max-width: 1430px) {
+    width: 100%;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
   }
 `;
 
