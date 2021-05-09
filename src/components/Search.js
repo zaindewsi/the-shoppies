@@ -33,7 +33,7 @@ const Search = () => {
   const sendQuery = async (query) => {
     setLoading(true);
     let data = await axios.get(
-      `http://www.omdbapi.com/?&type=movie&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
+      `https://www.omdbapi.com/?&type=movie&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
     );
     let newData = data.data.Search;
 
