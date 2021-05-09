@@ -45,7 +45,7 @@ const Search = () => {
 
       for (let i of newData) {
         let details = await axios(
-          `https://www.omdbapi.com/?i=${i.imdbID}&apikey=${process.env.REACT_APP_API_KEY_OMDB}`
+          `https://www.omdbapi.com/?i=${i.imdbID}&apikey=${REACT_APP_API_KEY_OMDB}`
         );
         allMovies.push(details.data);
       }
