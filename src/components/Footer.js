@@ -5,6 +5,11 @@ const Footer = () => {
   return (
     <Top>
       <p>Created by Zain Dewsi</p>
+      <p>
+        <a href="https://github.com/zaindewsi/the-shoppies">
+          GitHub Repository
+        </a>
+      </p>
     </Top>
   );
 };

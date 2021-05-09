@@ -338,6 +338,9 @@ const Top = styled.div`
     font-size: 1em;
     margin-bottom: 20px;
   }
+  a {
+    text-decoration: underline;
+  }
 
   @media (max-width: 768px) {
     text-align: left;

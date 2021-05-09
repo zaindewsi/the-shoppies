@@ -1,6 +1,6 @@
 # UX Developer Intern & Web Developer Intern Challenge - Fall 2021
 
-Developed by Zain Dewsi
+## <a href = "https://shopify.zaindewsi.com">Live Site </a>
 
 ## The Shoppies: Movie awards for entrepreneurs
 
