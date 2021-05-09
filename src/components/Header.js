@@ -6,7 +6,7 @@ const Header = () => {
     <div>
       <Top>
         <h1>
-          Welcome to the <Shoppies>Shoppies</Shoppies>
+          Welcome to the <Shoppies>Shoppies 🏆</Shoppies>
         </h1>
         <p>The annual Shopify movie awards for entrepreneurs!</p>
         <p>

@@ -117,13 +117,28 @@ const ClearAll = styled(Remove)`
   margin: 25px auto;
   position: absolute;
   bottom: 0;
-  left: 50%;
-  right: 25%;
+  left: 33%;
+  right: 66%;
   margin-left: -5em;
 
   &:disabled {
     cursor: not-allowed;
-    background-color: #ad0a0a;
+    background-color: rgba(199, 26, 26, 0.3);
+  }
+`;
+
+const Submit = styled(ClearAll)`
+  left: 66%;
+  right: 33%;
+  background-color: rgb(35, 170, 107);
+
+  &:hover {
+    background-color: rgb(20, 139, 84);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: rgba(35, 170, 107, 0.3);
   }
 `;
 
@@ -221,7 +236,11 @@ const Nominations = styled(Results)`
 const SearchArea = styled.section`
   background-color: #faf7ed;
   margin: 0;
-  padding: 2em;
+  padding: 5em;
+
+  @media (max-width: 800px) {
+    padding: 2em;
+  }
 `;
 
 const Form = styled.form`
@@ -233,7 +252,7 @@ const Form = styled.form`
   background-color: #fff;
   width: 75rem;
   cursor: "auto";
-  padding: 2rem;
+  padding: 2.5rem;
   height: 2rem;
   border-radius: 10rem;
   transition: width 300ms cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -245,11 +264,12 @@ const Form = styled.form`
 
   @media (max-width: 1430px) {
     width: 100%;
+    padding: 2rem;
   }
 `;
 
 const Input = styled.input`
-  font-size: 14px;
+  font-size: 1.5rem;
   line-height: 1;
   background-color: transparent;
   width: 100%;
@@ -270,6 +290,7 @@ const Input = styled.input`
   }
   @media (max-width: 768px) {
     width: 100%;
+    font-size: 1rem;
   }
 `;
 
@@ -310,10 +331,12 @@ const Top = styled.div`
 
   h1 {
     font-size: 3em;
+    margin-bottom: 20px;
   }
 
-  h2 {
-    font-size: 1.5em;
+  p {
+    font-size: 1em;
+    margin-bottom: 20px;
   }
 
   @media (max-width: 768px) {
@@ -325,7 +348,6 @@ const Top = styled.div`
 `;
 
 const Shoppies = styled.text`
-  font-family: Poppins;
   font-weight: bold;
 `;
 
@@ -349,4 +371,5 @@ export {
   Top,
   Shoppies,
   ClearAll,
+  Submit,
 };

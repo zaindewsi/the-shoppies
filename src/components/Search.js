@@ -22,6 +22,7 @@ import {
   Noms,
   EmptyResult,
   ClearAll,
+  Submit,
 } from "./StyledComponents";
 
 const Search = () => {
@@ -94,6 +95,13 @@ const Search = () => {
 
   const isClear = (nominations) => {
     return !nominations.length > 0;
+  };
+
+  const submitNoms = () => {
+    alert(
+      "Congratulations! Your nominations have been successfully submitted."
+    );
+    removeFromNomination(nominations.splice(0, 4));
   };
 
   useEffect(() => {
@@ -222,6 +230,14 @@ const Search = () => {
           >
             Clear All
           </ClearAll>
+          <Submit
+            disabled={isClear(nominations)}
+            onClick={() => {
+              submitNoms();
+            }}
+          >
+            Submit
+          </Submit>
         </Nominations>
       </MainBody>
     </div>

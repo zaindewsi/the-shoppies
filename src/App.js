@@ -1,5 +1,6 @@
 import Header from "./components/Header";
 import Search from "./components/Search";
+import Footer from "./components/Footer";
 import { ChakraProvider } from "@chakra-ui/react";
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
       <ChakraProvider>
         <Header />
         <Search />
+        <Footer />
       </ChakraProvider>
     </div>
   );
