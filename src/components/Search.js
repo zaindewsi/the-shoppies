@@ -29,12 +29,11 @@ const Search = () => {
   const [resultData, setResultData] = useState([]);
   const [nominations, setNominations] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { REACT_APP_API_KEY_OMDB } = process.env;
 
   const sendQuery = async (query) => {
     setLoading(true);
     let data = await axios.get(
-      `http://www.omdbapi.com/?&type=movie&apikey=${REACT_APP_API_KEY_OMDB}&s=${query}`
+      `http://www.omdbapi.com/?&type=movie&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
     );
     let newData = data.data.Search;
 
@@ -45,7 +44,7 @@ const Search = () => {
 
       for (let i of newData) {
         let details = await axios(
-          `https://www.omdbapi.com/?i=${i.imdbID}&apikey=${REACT_APP_API_KEY_OMDB}`
+          `https://www.omdbapi.com/?i=${i.imdbID}&apikey=${process.env.REACT_APP_API_KEY_OMDB}`
         );
         allMovies.push(details.data);
       }
