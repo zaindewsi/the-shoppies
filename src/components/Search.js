@@ -21,6 +21,7 @@ import {
   MainBody,
   Noms,
   EmptyResult,
+  ClearAll,
 } from "./StyledComponents";
 
 const Search = () => {
@@ -90,6 +91,10 @@ const Search = () => {
     return (
       nominations && (nominations.includes(item) || nominations.length >= 5)
     );
+  };
+
+  const isClear = (nominations) => {
+    return !nominations.length > 0;
   };
 
   useEffect(() => {
@@ -191,6 +196,7 @@ const Search = () => {
           <VStack
             divider={<StackDivider borderColor="gray.400" />}
             align="stretch"
+            marginBottom="5em"
             backgroundColor={"#eee"}
           >
             {nominations.map((item, index) => {
@@ -208,6 +214,15 @@ const Search = () => {
               );
             })}
           </VStack>
+
+          <ClearAll
+            disabled={isClear(nominations)}
+            onClick={() => {
+              removeFromNomination(nominations.splice(0, 4));
+            }}
+          >
+            Clear All
+          </ClearAll>
         </Nominations>
       </MainBody>
     </div>

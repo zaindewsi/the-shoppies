@@ -106,6 +106,21 @@ const Remove = styled(NomButton)`
   }
 `;
 
+const ClearAll = styled(Remove)`
+  width: 10em;
+  margin: 25px auto;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  right: 25%;
+  margin-left: -5em;
+
+  &:disabled {
+    cursor: not-allowed;
+    background-color: #ad0a0a;
+  }
+`;
+
 const Poster = styled.div`
   display: flex;
   align-items: flex-start;
@@ -185,14 +200,15 @@ const Nominations = styled(Results)`
   margin-left: 0;
   width: 40%;
   min-height: 90vh;
-  max-height: 90vh;
+  max-height: 98vh;
   position: sticky;
   top: 10px;
 
   @media (max-width: 1430px) {
-    display: block;
     width: 100%;
-    min-height: 85vh;
+    min-height: 50vh;
+    max-height: max-content;
+    position: relative;
   }
 `;
 
@@ -311,4 +327,5 @@ export {
   EmptyResult,
   Top,
   Shoppies,
+  ClearAll,
 };
