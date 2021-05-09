@@ -28,11 +28,12 @@ const Search = () => {
   const [resultData, setResultData] = useState([]);
   const [nominations, setNominations] = useState([]);
   const [loading, setLoading] = useState(false);
+  const OMDB_API = process.env.REACT_APP_API_KEY_OMDB;
 
   const sendQuery = async (query) => {
     setLoading(true);
     let data = await axios.get(
-      `http://www.omdbapi.com/?&type=movie&apikey=${process.env.REACT_APP_API_KEY_OMDB}&s=${query}`
+      `http://www.omdbapi.com/?&type=movie&apikey=${OMDB_API}&s=${query}`
     );
     let newData = data.data.Search;
 
