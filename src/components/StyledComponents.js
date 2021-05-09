@@ -14,6 +14,12 @@ const EmptyResult = styled.div`
   @media (max-width: 768px) {
     display: flex;
     min-width: 100%;
+
+    font-size: 1rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
   }
 `;
 
